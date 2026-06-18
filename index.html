@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a56db" />
+  <meta name="description" content="Dosya yükle, ara ve yönet — internet olmadan." />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Dosya Arşivim</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <span class="logo">📁 Dosya Arşivim</span>
+      <span class="dosya-sayisi" id="dosyaSayisi">0 dosya</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ARAMA -->
+    <section class="arama-bolumu">
+      <div class="arama-kutusu">
+        <span class="arama-icon">🔍</span>
+        <input
+          type="text"
+          id="aramaInput"
+          placeholder="Kelime ara..."
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+        />
+        <button id="aramayiTemizle" class="temizle-btn" style="display:none">✕</button>
+      </div>
+      <div id="aramaSonucu" class="arama-sonucu" style="display:none"></div>
+    </section>
+
+    <!-- YÜKLEME -->
+    <section class="yukleme-bolumu">
+      <label class="yukle-btn" for="dosyaSecici">
+        <span class="yukle-icon">⬆️</span>
+        <span>Dosya Yükle</span>
+        <small>PDF veya Word (.docx)</small>
+      </label>
+      <input
+        type="file"
+        id="dosyaSecici"
+        accept=".pdf,.docx"
+        multiple
+        style="display:none"
+      />
+      <div id="yuklemeIlerleme" class="yukleme-ilerleme" style="display:none">
+        <div class="ilerleme-cubugu"><div class="ilerleme-dolum" id="ilerlemeDolum"></div></div>
+        <span id="yuklemeYazisi">Yükleniyor...</span>
+      </div>
+    </section>
+
+    <!-- DOSYA LİSTESİ -->
+    <section class="dosya-listesi-bolumu">
+      <div id="bosEkran" class="bos-ekran">
+        <div class="bos-ikon">🗂️</div>
+        <p>Henüz dosya yok.</p>
+        <small>PDF veya Word dosyası yükleyerek başla.</small>
+      </div>
+      <ul id="dosyaListesi" class="dosya-listesi"></ul>
+    </section>
+
+  </main>
+
+  <!-- SİLME ONAY MODALI -->
+  <div id="silmeModal" class="modal" style="display:none">
+    <div class="modal-kart">
+      <p>Bu dosyayı silmek istediğine emin misin?</p>
+      <strong id="silinecekDosyaAdi"></strong>
+      <div class="modal-butonlar">
+        <button id="silmeIptal" class="btn-iptal">Vazgeç</button>
+        <button id="silmeOnayla" class="btn-sil">Sil</button>
+      </div>
+    </div>
+  </div>
+  <div id="modalArkaplan" class="modal-arkaplan" style="display:none"></div>
+
+  <!-- BİLDİRİM -->
+  <div id="bildirim" class="bildirim" style="display:none"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
