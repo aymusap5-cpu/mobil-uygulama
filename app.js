@@ -146,15 +146,44 @@ async function listeGuncelle() {
         ${isPdf ? '📄' : '📝'}
       </div>
       <div class="dosya-bilgi">
-        <div class="dosya-adi">${dosya.ad}</div>
+        <div class="dosya-adi" style="cursor: pointer; text-decoration: underline;">${dosya.ad}</div>
         <div class="dosya-meta">${boyutFormat(dosya.boyut)} · ${tarihFormat(dosya.tarih)}</div>
       </div>
       <button class="sil-btn" data-id="${dosya.id}" title="Sil">🗑️</button>
     `;
 
+    // --- BURASI EKLENİYOR ---
+    // Dosya ismine tıklandığında dosyayı açan kod:
+    li.querySelector('.dosya-adi').addEventListener('click', () => {
+      if (!dosya.dosyaIcerigi) {
+        bildirimGoster("Bu dosya eski kayıtlı, lütfen tekrar yükle.", "hata");
+        return;
+      }
+      const url = URL.createObjectURL(dosya.dosyaIcerigi);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = dosya.ad;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+    // -------------------------
+
     liste.appendChild(li);
   });
 
+  // Silme butonları (Zaten vardı, aynen kalsın)
+  liste.querySelectorAll('.sil-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      silinecekId = Number(btn.dataset.id);
+      const dosya = dosyalar.find(d => d.id === silinecekId);
+      document.getElementById('silinecekDosyaAdi').textContent = dosya ? dosya.ad : '';
+      document.getElementById('silmeModal').style.display = 'block';
+      document.getElementById('modalArkaplan').style.display = 'block';
+    });
+  });
+}
   // Silme butonları
   liste.querySelectorAll('.sil-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -264,6 +293,7 @@ async function dosyalariYukle(dosyalar) {
         boyut: dosya.size,
         tur: tur,
         metin: metin,
+        dosyaIcerigi:dosya,
         tarih: Date.now()
       });
 
