@@ -294,6 +294,9 @@ async function dosyalariYukle(dosyalar) {
       let metin = '';
       let tur = '';
 
+      // Kaydetmek için ayrı bir kopya al (PDF.js/mammoth orijinali tüketebilir)
+      const saklanacakVeri = arrayBuffer.slice(0);
+
       if (dosya.name.toLowerCase().endsWith('.pdf')) {
         tur = 'pdf';
         metin = await pdfMetinCikar(arrayBuffer);
@@ -307,7 +310,7 @@ async function dosyalariYukle(dosyalar) {
         boyut: dosya.size,
         tur: tur,
         metin: metin,
-        veri: arrayBuffer,
+        veri: saklanacakVeri,
         tarih: Date.now()
       });
 
