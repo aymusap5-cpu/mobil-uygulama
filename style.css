@@ -252,6 +252,8 @@ main {
 .tip-docx { background: #eff6ff; }
 
 .dosya-bilgi { flex: 1; min-width: 0; }
+.dosya-ac { cursor: pointer; }
+.dosya-ac:hover .dosya-adi { color: var(--mavi); }
 .dosya-adi {
   font-weight: 600;
   font-size: 0.92rem;

@@ -145,45 +145,25 @@ async function listeGuncelle() {
       <div class="dosya-tip-ikon ${isPdf ? 'tip-pdf' : 'tip-docx'}">
         ${isPdf ? '📄' : '📝'}
       </div>
-      <div class="dosya-bilgi">
-        <div class="dosya-adi" style="cursor: pointer; text-decoration: underline;">${dosya.ad}</div>
+      <div class="dosya-bilgi dosya-ac" data-id="${dosya.id}">
+        <div class="dosya-adi">${dosya.ad}</div>
         <div class="dosya-meta">${boyutFormat(dosya.boyut)} · ${tarihFormat(dosya.tarih)}</div>
       </div>
       <button class="sil-btn" data-id="${dosya.id}" title="Sil">🗑️</button>
     `;
 
-    // --- BURASI EKLENİYOR ---
-    // Dosya ismine tıklandığında dosyayı açan kod:
-    li.querySelector('.dosya-adi').addEventListener('click', () => {
-      if (!dosya.dosyaIcerigi) {
-        bildirimGoster("Bu dosya eski kayıtlı, lütfen tekrar yükle.", "hata");
-        return;
-      }
-      const url = URL.createObjectURL(dosya.dosyaIcerigi);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = dosya.ad;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
-    // -------------------------
-
     liste.appendChild(li);
   });
 
-  // Silme butonları (Zaten vardı, aynen kalsın)
-  liste.querySelectorAll('.sil-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      silinecekId = Number(btn.dataset.id);
-      const dosya = dosyalar.find(d => d.id === silinecekId);
-      document.getElementById('silinecekDosyaAdi').textContent = dosya ? dosya.ad : '';
-      document.getElementById('silmeModal').style.display = 'block';
-      document.getElementById('modalArkaplan').style.display = 'block';
+  // Dosyayı aç
+  liste.querySelectorAll('.dosya-ac').forEach(el => {
+    el.addEventListener('click', async () => {
+      const id = Number(el.dataset.id);
+      const dosya = dosyalar.find(d => d.id === id);
+      if (dosya) await dosyaAc(dosya);
     });
   });
-}
+
   // Silme butonları
   liste.querySelectorAll('.sil-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -194,6 +174,40 @@ async function listeGuncelle() {
       document.getElementById('modalArkaplan').style.display = 'block';
     });
   });
+}
+
+// ── DOSYA AÇ / İNDİR ──
+function mimeTuru(tur) {
+  if (tur === 'pdf') return 'application/pdf';
+  if (tur === 'docx') return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  return 'application/octet-stream';
+}
+
+async function dosyaAc(dosya) {
+  if (!dosya.veri) {
+    bildirimGoster('Bu dosyanın verisi bulunamadı.', 'hata');
+    return;
+  }
+
+  const blob = new Blob([dosya.veri], { type: mimeTuru(dosya.tur) });
+  const url = URL.createObjectURL(blob);
+
+  if (dosya.tur === 'pdf') {
+    // PDF: tarayıcıda yeni sekmede aç
+    window.open(url, '_blank');
+  } else {
+    // DOCX: tarayıcı içinde görüntülenemiyor, indir
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = dosya.ad;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    bildirimGoster('Word dosyası indiriliyor...', 'basari');
+  }
+
+  // Belleği serbest bırak
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
 // ── PASAJ BÖLÜMÜ ──
@@ -293,7 +307,7 @@ async function dosyalariYukle(dosyalar) {
         boyut: dosya.size,
         tur: tur,
         metin: metin,
-        dosyaIcerigi:dosya,
+        veri: arrayBuffer,
         tarih: Date.now()
       });
 
