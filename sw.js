@@ -1,10 +1,10 @@
-const ONBELLEK_ADI = 'dosya-arsivim-v1';
+const ONBELLEK_ADI = 'dosya-arsivim-v2'; // Versiyonu v2 yaptık ki telefon güncellemeyi fark etsin
 const ONBELLEKLENECEKLER = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/app.js',
-  '/manifest.json',
+  '/mobil-uygulama/',
+  '/mobil-uygulama/index.html',
+  '/mobil-uygulama/style.css',
+  '/mobil-uygulama/app.js',
+  '/mobil-uygulama/manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js'
